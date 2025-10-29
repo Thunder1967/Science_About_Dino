@@ -35,4 +35,19 @@ dino.gameOver = function(){}
 
 //取消無敵，回復原始設定
 dino.gameOver = Runner.prototype.gameOver
+
+//調整起跳速度，值越小，跳越高
+TREX.config.initialJumpVelocity = -200
+
+//遊戲加速度
+Dconfig.acceleration = 10
+
+//掉落速度，值越大，掉落越快
+TREX.config.dropVelocity = 5
+
+//障礙物出現間隔，越小障礙物愈密集
+dino.horizon.gapCoefficient = -2
+
+//把最高分紀錄歸零
+dino.saveHighScore(0,false)
 ```
