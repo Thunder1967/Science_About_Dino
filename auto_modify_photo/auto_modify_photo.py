@@ -1,15 +1,15 @@
-#pyinstaller auto_modify_photo\auto_modify_photo.py --onefile
+#pyinstaller auto_modify_photo.py --onefile
 # place_with_scale.py
 # 需求: pillow
 from PIL import Image
 
 # 格式: (x_left, y_bottom, height, width)
-PLACES = [(76, 96, 90, 90)]\
+PLACES_BIG = [(76, 96, 90, 90)]\
 +[(1678+x*88,96,94,88) for x in range(6)]\
 +[(2206+x*118,96,60,118) for x in range(2)]
-# [
-#     (40, 49, 45, 45),
-# ]+[(845+x*45,49,47,45) for x in range(6)]
+PLACES_SMALL = [(40, 49, 45, 45)]\
++[(848+x*44,49,47,44) for x in range(6)]\
++[(1112+x*59,49,30,59) for x in range(2)]
 
 def load_rgba(path):
     return Image.open(path).convert("RGBA")
@@ -48,21 +48,25 @@ def paste_bottom_left(base, sprite, x_left, y_bottom):
     base.alpha_composite(sprite, (x, y))
 
 def main():
-    base_path = "original_dino_big.png"
+    base_path_big = "original_dino_big.png"
+    base_path_small = "original_dino_small.png"
     char_path = input("input the role file name : ")
-    out_path = "output.png"
-
-    base = load_rgba(base_path)
+    base_big = load_rgba(base_path_big)
+    base_small = load_rgba(base_path_small)
     sprite_raw = load_rgba(char_path)
 
-    out = base.copy()
-    for (x, y, h, w) in PLACES:
-        clear_rect(out, x, y, h, w)
+    for (x, y, h, w) in PLACES_BIG:
+        clear_rect(base_big, x, y, h, w)
         sp = resize_sprite(sprite_raw, h, w)
-        paste_bottom_left(out, sp, x, y)
+        paste_bottom_left(base_big, sp, x, y)
+    for (x, y, h, w) in PLACES_SMALL:
+        clear_rect(base_small, x, y, h, w)
+        sp = resize_sprite(sprite_raw, h, w)
+        paste_bottom_left(base_small, sp, x, y)
 
-    out.save(out_path)
-    print("已輸出", out_path)
+    base_big.save("output_big.png")
+    base_small.save("output_small.png")
+    print("已輸出")
 
 if __name__ == "__main__":
     main()
